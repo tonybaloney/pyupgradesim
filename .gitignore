@@ -1,0 +1,6 @@
+.venv*/
+results.html
+results_*.csv
+*.py[co]
+__pycache__/
+db.sqlite3
