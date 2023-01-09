@@ -1,9 +1,10 @@
+# TODO - templatize this 
+
 images:
 	docker build -t benchapp-3.8 --build-arg VERSION=3.8 .
 	docker build -t benchapp-3.9 --build-arg VERSION=3.9 .
 	docker build -t benchapp-3.10 --build-arg VERSION=3.10 .
 	docker build -t benchapp-3.11 --build-arg VERSION=3.11 .
-
 
 benchmarks-3.8:
 	docker run -d -p 127.0.0.1:8000:80/tcp --name benchmark-server-3.8 benchapp-3.8
