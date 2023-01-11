@@ -15,15 +15,13 @@ class BasicUser(HttpUser):
     
     @task(2)
     def view_locations(self):
-        for destination_id in range(1, 11):
-            with self.client.get(f"/destination/{destination_id}", catch_response=True) as response:
-                self.environment.request_meta_data.append(response.request_meta)
+        with self.client.get(f"/destination/4", catch_response=True) as response:
+            self.environment.request_meta_data.append(response.request_meta)
 
     @task(2)
     def view_cruises(self):
-        for cruise_id in range(1, 6):
-            with self.client.get(f"/cruise/{cruise_id}", catch_response=True) as response:
-                self.environment.request_meta_data.append(response.request_meta)
+        with self.client.get(f"/cruise/3", catch_response=True) as response:
+            self.environment.request_meta_data.append(response.request_meta)
 
     @task
     def submit_enquiry(self):
