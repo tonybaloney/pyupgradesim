@@ -1,0 +1,48 @@
+{% load humanize %}
+
+<table class="table">
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Started</th>
+        <th>Version</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+
+    <tbody>
+  {% for task in tasks %}
+   <tr>
+      <td>{{ task.name }}</td>
+      <td>{{ task.started | naturaltime }}</td>
+      <td>{{ task.args }}</td>
+      <td>{% if task.stopped %} 
+            {% if task.success %}
+              <progress class="progress is-success" value="100" max="100">100%</progress>
+            {% else %}
+            <div id="result-modal-{{task.name}}" class="modal">
+              <div class="modal-background"></div>
+              <div class="modal-content">
+                <div class="box">
+                  <p>Result</p>
+                  <pre>{{ task.result }}</pre>
+                </div>
+              </div>
+            
+              <button class="modal-close is-large" aria-label="close"></button>
+            </div>
+            <div class="icon-text">
+              <span class="icon has-text-warning js-modal-trigger"  data-target="result-modal-{{task.name}}">
+                <i class="fa fa-exclamation-triangle"></i>
+              </span>
+              <span>Failed</span>
+            </div>
+            {% endif %}
+          {% else %}
+            <progress class="progress is-primary" max="100">15%</progress>
+          {% endif %}
+      </td>
+   </tr>
+  {% endfor %}
+</tbody>
+</table>

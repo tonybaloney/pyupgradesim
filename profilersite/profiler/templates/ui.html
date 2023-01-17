@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Python Version Load Testing Harness</title>
+    <script src="https://unpkg.com/htmx.org@1.8.4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {{ js_resources | safe }}
+    {{ css_resources | safe }}
+    {% for plot_script in plot_scripts %}
+    {{ plot_script | safe }}
+    {% endfor %}
+  </head>
+  <body>
+  <section class="main-content columns is-fullheight">
+    <div class="container column is-12">
+        <div class="section">
+            <h1 class="title">
+                Python Version Load Testing Harness
+            </h1>
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="notification is-{{message.tags}}">
+                    <p>{{ message }}</p>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="columns">
+              <div class="column is-one-third">
+                <form method="post">
+                  {% csrf_token %}
+                  <div class="field">
+                      <label class="label">Time</label>
+                      <div class="control">
+                        <input class="input" type="text" name="time" placeholder="Time" value="60">
+                      </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Users</label>
+                    <div class="control">
+                      <input class="input" type="text" name="users" placeholder="Users" value="4">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Version</label>
+                    <div class="select is-multiple is-fullwidth">
+                        <select multiple name="version" size="4">
+                          <option value="3.8">3.8</option>
+                          <option value="3.9">3.9</option>
+                          <option value="3.10">3.10</option>
+                          <option value="3.11">3.11</option>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="control">
+                      <button id="submit-button" class="button is-primary" type="submit">Test</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="column is-two-thirds">
+                <label class="label">Running Tests</label>
+                <div hx-get="/tasks" hx-trigger="every 5s">
+                  Loading..
+                </div>
+              </div>
+            </div>
+            <article id="message-box" class="message">
+              <div class="message-header">
+                <p>Results</p>
+              </div>
+            </article>
+            <div class="columns">
+            {% for plot_div in plot_divs %}
+                  <div class="column is-one-half">
+                  {{ plot_div | safe }}
+                  </div>
+
+                {% if forloop.counter|divisibleby:"2" %}
+                </div>
+                <div class="columns">
+                {% endif %}
+
+            {% endfor %}
+              </div>
+        </div>
+    </div>
+  </section>
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        Site built by <a href="https://github.com/tonybaloney">Anthony Shaw</a>. The source code is licensed
+        <a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+      </p>
+    </div>
+  </footer>
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+  // Functions to open and close a modal
+  function openModal($el) {
+    $el.classList.add('is-active');
+  }
+
+  function closeModal($el) {
+    $el.classList.remove('is-active');
+  }
+
+  function closeAllModals() {
+    (document.querySelectorAll('.modal') || []).forEach(($modal) => {
+      closeModal($modal);
+    });
+  }
+
+  // Add a click event on buttons to open a specific modal
+  (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+    const modal = $trigger.dataset.target;
+    const $target = document.getElementById(modal);
+
+    $trigger.addEventListener('click', () => {
+      openModal($target);
+    });
+  });
+
+  // Add a click event on various child elements to close the parent modal
+  (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
+    const $target = $close.closest('.modal');
+
+    $close.addEventListener('click', () => {
+      closeModal($target);
+    });
+  });
+
+  // Add a keyboard event to close all modals
+  document.addEventListener('keydown', (event) => {
+    const e = event || window.event;
+
+    if (e.keyCode === 27) { // Escape key
+      closeAllModals();
+    }
+  });
+});
+  </script>
+  </body>
+</html>
