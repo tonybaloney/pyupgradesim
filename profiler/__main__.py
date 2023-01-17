@@ -1,9 +1,9 @@
 import gevent
 import csv
-import sys
+import os.path
 from locust.env import Environment
 from locust.log import setup_logging
-
+from locust.stats import stats_printer
 from .locustfile import BasicUser
 
 import argparse
@@ -34,13 +34,16 @@ env.events.init.fire(environment=env, runner=runner)
 # start the test
 runner.start(args.users, spawn_rate=5)
 
+# start a greenlet that periodically outputs the current stats
+gevent.spawn(stats_printer(env.stats))
+
 # in 60 seconds stop the runner
 gevent.spawn_later(args.time, lambda: runner.quit())
 
 # wait for the greenlets
 runner.greenlet.join()
 
-with open(f'{args.name}_fullstats.csv', 'w', newline='') as csvfile:
+with open(os.path.join('results', f'{args.name}_fullstats.csv'), 'w', newline='') as csvfile:
     fieldnames = list(env.request_meta_data[0].keys())
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore')
 

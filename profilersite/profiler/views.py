@@ -12,7 +12,7 @@ from bokeh.embed import components
 from bokeh.models import NumeralTickFormatter
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
-from django_q.tasks import async_task, fetch_group
+from django_q.tasks import async_task, fetch_group, queue_size
 
 def home(request: HttpRequest):
     if request.method == 'POST':
@@ -20,8 +20,8 @@ def home(request: HttpRequest):
             for version in request.POST.getlist('version'):
                 time = int(request.POST['time'])
                 users = int(request.POST['users'])
-                async_task('profiler.tasks.test_version', version, time, users, group="loadtest")
-                messages.add_message(request, messages.INFO, f'Queued test of {version} for {time} seconds with {users} users')
+                name = async_task('profiler.tasks.test_version', version, time, users, group="loadtest")
+                messages.add_message(request, messages.INFO, f'Queued test \'{name}\' of {version} for {time} seconds with {users} users')
 
     # file to save the model
     quantiles = [0.5, 0.66, 0.75, 0.8, 0.9, 0.95]
@@ -70,5 +70,5 @@ def home(request: HttpRequest):
     )
 
 
-def tasks(request):
-    return render(request, 'tasks.html', context={'tasks': fetch_group('loadtest')})
+def tasks(request, number=10):
+    return render(request, 'tasks.html', context={'tasks': fetch_group('loadtest')[:number], 'queued': queue_size()})

@@ -1,11 +1,12 @@
 {% load humanize %}
-
+<p>Queued: {{ queued }}</p>
 <table class="table">
     <thead>
       <tr>
         <th>Task</th>
         <th>Started</th>
-        <th>Version</th>
+        <th>Finished</th>
+        <th>Arguments</th>
         <th>Progress</th>
       </tr>
     </thead>
@@ -15,11 +16,9 @@
    <tr>
       <td>{{ task.name }}</td>
       <td>{{ task.started | naturaltime }}</td>
+      <td>{{ task.stopped | naturaltime }}</td>
       <td>{{ task.args }}</td>
-      <td>{% if task.stopped %} 
-            {% if task.success %}
-              <progress class="progress is-success" value="100" max="100">100%</progress>
-            {% else %}
+      <td>
             <div id="result-modal-{{task.name}}" class="modal">
               <div class="modal-background"></div>
               <div class="modal-content">
@@ -31,16 +30,19 @@
             
               <button class="modal-close is-large" aria-label="close"></button>
             </div>
+            {% if task.success %}
             <div class="icon-text">
-              <span class="icon has-text-warning js-modal-trigger"  data-target="result-modal-{{task.name}}">
+              <span class="icon has-text-success js-modal-trigger" data-target="result-modal-{{task.name}}">
+                <i class="fa fa-check"></i>
+              </span>
+            </div>
+            {% else %}
+            <div class="icon-text">
+              <span class="icon has-text-warning js-modal-trigger" data-target="result-modal-{{task.name}}">
                 <i class="fa fa-exclamation-triangle"></i>
               </span>
-              <span>Failed</span>
             </div>
             {% endif %}
-          {% else %}
-            <progress class="progress is-primary" max="100">15%</progress>
-          {% endif %}
       </td>
    </tr>
   {% endfor %}
