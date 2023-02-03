@@ -40,18 +40,20 @@ def home(request: HttpRequest):
 
     scripts = []
     divs = []
+    urls = []
 
     for url, data in stats.items():
         graph = figure(title = f"Load Test for {url}", x_axis_label = 'Quantile', y_axis_label = 'Response time (ms)')
         colors = iter(['red', 'green', 'blue', 'purple', 'brown', 'orange'])
         for version, data in data.items():
             graph.line(quantiles, data['response_time'], legend_label=version, line_color=next(colors), line_width=2)
-        
+
         graph.xaxis.formatter = NumeralTickFormatter(format='0 %')
         # render template
         script, div = components(graph)
         scripts.append(script)
         divs.append(div)
+        urls.append(url)
         
     # grab the static resources
     js_resources = INLINE.render_js()
@@ -63,6 +65,7 @@ def home(request: HttpRequest):
         context = {
             "plot_scripts":scripts,
             "plot_divs":divs,
+            "urls": urls,
             "js_resources":js_resources,
             "css_resources":css_resources,
             "tasks": tasks,

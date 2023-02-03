@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+<div class="columns">
+{% for plot_div in plot_divs %}
+        <div class="column is-one-half">
+        {{ plot_div | safe }}
+        </div>
+
+    {% if forloop.counter|divisibleby:"2" %}
+    </div>
+    <div class="columns">
+    {% endif %}
+
+{% endfor %}
+</div>
