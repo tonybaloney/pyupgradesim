@@ -23,6 +23,17 @@ def home(request: HttpRequest):
                 name = async_task('profiler.tasks.test_version', version, time, users, group="loadtest")
                 messages.add_message(request, messages.INFO, f'Queued test \'{name}\' of {version} for {time} seconds with {users} users')
 
+
+    return render(
+        request,
+        'ui.html',
+        context = {
+            "tasks": tasks,
+        }
+    )
+
+
+def results(request: HttpRequest):
     # file to save the model
     quantiles = [0.5, 0.66, 0.75, 0.8, 0.9, 0.95]
     stats = defaultdict(dict)
@@ -61,7 +72,7 @@ def home(request: HttpRequest):
 
     return render(
             request,
-        'ui.html',
+        'results.html',
         context = {
             "plot_scripts":scripts,
             "plot_divs":divs,

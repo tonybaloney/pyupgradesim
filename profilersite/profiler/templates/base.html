@@ -14,28 +14,26 @@
     {% endfor %}
   </head>
   <body>
+    <section class="hero is-small is-primary">
+      <div class="hero-body">
+        <p class="title">
+          pyUpgradeSim - Python Version Load Testing Harness
+        </p>
+      </div>
+    </section>
   <section class="main-content columns is-fullheight">
       <aside class="menu column is-2 is-narrow-mobile is-fullheight section">
         <p class="menu-label">
-          General
+          Menu
         </p>
         <ul class="menu-list">
-          <li><a>Jobs</a></li>
+          <li><a href="/">Jobs</a></li>
           <li><a class="js-modal-trigger" data-target="schedule-task-modal">Schedule Test</a></li>
-        </ul>
-        <p class="menu-label">
-          Results
+          <li><a href="/results">Results</a></li>
         </p>
-        <ul class="menu-list">
-          <li><a>Team Settings</a></li>
-        </ul>
       </aside>
-    <div class="container column is-10">
-      
+    <div class=" column is-10">
         <div class="section">
-            <h1 class="title">
-                Python Version Load Testing Harness
-            </h1>
             {% if messages %}
                 {% for message in messages %}
                 <article class="message is-small is-{{message.tags}}">
