@@ -1,6 +1,6 @@
-# django-compare-tool
+# pyUpgradeSim
 
-A set of scripts to launch Docker images with a Django web application with different Python versions and a load test to benchmark them.
+A set of scripts to launch Docker images with a web application with different Python versions and a load test to benchmark them.
 
 ## Usage
 
