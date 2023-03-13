@@ -2,3 +2,4 @@ locust
 docker
 pandas
 bokeh
+mimesis
