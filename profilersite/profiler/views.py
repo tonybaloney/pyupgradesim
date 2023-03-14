@@ -12,16 +12,18 @@ from bokeh.embed import components
 from bokeh.models import NumeralTickFormatter
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
-from django_q.tasks import async_task, fetch_group, queue_size
+from django_q.tasks import async_task, fetch_group, queue_size, Chain
 
 def home(request: HttpRequest):
     if request.method == 'POST':
         if 'version' in request.POST and request.POST['version']:
+            chain = Chain(group="loadtest")
             for version in request.POST.getlist('version'):
                 time = int(request.POST['time'])
                 users = int(request.POST['users'])
-                name = async_task('profiler.tasks.test_version', version, time, users, group="loadtest")
-                messages.add_message(request, messages.INFO, f'Queued test \'{name}\' of {version} for {time} seconds with {users} users')
+                chain.append('profiler.tasks.test_version', version, time, users)
+                messages.add_message(request, messages.INFO, f'Queued test of {version} for {time} seconds with {users} users')
+            chain.run()
 
 
     return render(

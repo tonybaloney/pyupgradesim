@@ -26,11 +26,12 @@ class BasicUser(HttpUser):
     @task
     def submit_enquiry(self):
         response = self.client.get("/info_request")
-        csrftoken = response.cookies['csrftoken']
-        person = mimesis.Person()
-        self.client.post("/info_request", {
-            "name": person.full_name(),
-            "email": person.email() ,
-            "cruise": "1", 
-            "notes": "I would like to know more about this cruise"},
-            headers={"X-CSRFToken": csrftoken})
+        if 'csrftoken' in response.cookies:
+            csrftoken = response.cookies['csrftoken']
+            person = mimesis.Person()
+            self.client.post("/info_request", {
+                "name": person.full_name(),
+                "email": person.email() ,
+                "cruise": "1", 
+                "notes": "I would like to know more about this cruise"},
+                headers={"X-CSRFToken": csrftoken})
