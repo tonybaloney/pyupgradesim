@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from django.shortcuts import render
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 import pathlib
 
@@ -95,6 +96,7 @@ def tasks(request, number=10):
     return render(request, 'tasks.html', context={'tasks': tasks[:number], 'queued': queue_size()})
 
 
+@login_required
 def reset(request):
     tasks = fetch_group('loadtest')
     if tasks:
