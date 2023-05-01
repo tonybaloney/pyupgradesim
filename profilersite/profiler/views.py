@@ -12,7 +12,7 @@ from bokeh.embed import components
 from bokeh.models import NumeralTickFormatter
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
-from django_q.tasks import fetch_group, queue_size, Chain
+from django_q.tasks import fetch_group, queue_size, Chain, get_broker
 
 def home(request: HttpRequest):
     if request.method == 'POST':
@@ -93,3 +93,14 @@ def tasks(request, number=10):
     if not tasks:
         tasks = []
     return render(request, 'tasks.html', context={'tasks': tasks[:number], 'queued': queue_size()})
+
+
+def reset(request):
+    tasks = fetch_group('loadtest')
+    if tasks:
+        for task in tasks:
+            task.delete()
+    broker = get_broker()
+    broker.purge_queue()
+    messages.add_message(request, messages.INFO, f'Reset load test queue')
+    return home(request)
