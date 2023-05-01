@@ -12,7 +12,7 @@ from bokeh.embed import components
 from bokeh.models import NumeralTickFormatter
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
-from django_q.tasks import async_task, fetch_group, queue_size, Chain
+from django_q.tasks import fetch_group, queue_size, Chain
 
 def home(request: HttpRequest):
     if request.method == 'POST':

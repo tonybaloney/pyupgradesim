@@ -1,13 +1,13 @@
-import gevent
+import argparse
 import csv
-import os.path
+import pathlib
+
+import gevent
 from locust.env import Environment
 from locust.log import setup_logging
 from locust.stats import stats_printer
+
 from .locustfile import BasicUser
-
-import argparse
-
 
 parser = argparse.ArgumentParser(description='Run a load test.')
 parser.add_argument('name', type=str, 
@@ -43,7 +43,9 @@ gevent.spawn_later(args.time, lambda: runner.quit())
 # wait for the greenlets
 runner.greenlet.join()
 
-with open(os.path.join('results', f'{args.name}_fullstats.csv'), 'w', newline='') as csvfile:
+results_path = pathlib.Path("results")
+results_path.mkdir(exist_ok=True)
+with open(results_path / f'{args.name}_fullstats.csv', 'w', newline='') as csvfile:
     fieldnames = list(env.request_meta_data[0].keys())
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore')
 
