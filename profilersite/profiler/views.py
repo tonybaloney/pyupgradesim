@@ -42,6 +42,8 @@ def results(request: HttpRequest):
 
     for version in ['3.8', '3.9', '3.10', '3.11']:
         path = pathlib.Path.cwd().parent.joinpath(f'results/results_{version}_fullstats.csv')
+        if not path.exists():
+            continue
         df = pd.read_csv(path).drop(['exception', 'start_time', 'response_length'], axis=1)
         df.round({'response_time': 2})
 
@@ -87,4 +89,7 @@ def results(request: HttpRequest):
 
 
 def tasks(request, number=10):
-    return render(request, 'tasks.html', context={'tasks': fetch_group('loadtest')[:number], 'queued': queue_size()})
+    tasks = fetch_group('loadtest')
+    if not tasks:
+        tasks = []
+    return render(request, 'tasks.html', context={'tasks': tasks[:number], 'queued': queue_size()})

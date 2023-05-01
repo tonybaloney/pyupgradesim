@@ -8,5 +8,6 @@ images:
 
 web:
 	cd profilersite
+	python manage.py migrate
 	python manage.py qcluster &
 	python manage.py runserver

@@ -3,3 +3,8 @@ docker
 pandas
 bokeh
 mimesis
+django
+django-q
+django-crispy-forms>=2.0.0,<3.0.0
+crispy-bootstrap4==2022.1
+gevent
